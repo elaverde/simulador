@@ -12,8 +12,8 @@
 
           <!-- Componente de cálculo a la derecha más ancho -->
           <v-col class="calculos" cols="8" md="8">
-            <Simulador_Grafica :datos="datosSimulacion" />
-            <Simulador_Calculos :datos="datosSimulacion" />
+          <Simulador_Grafica :datos="datosSimulacion" />
+            <Simulador_Calculos @datos-simulacion="setAbonos" :datos="datosSimulacion" />
           </v-col>
         </v-row>
       </v-container>
@@ -25,6 +25,7 @@
 import Simulador_Calculos from './components/Simulador_Calculos.vue'
 import Simulador_Form from './components/Simulador_Form.vue';
 import Simulador_Grafica from './components/Simulador_Grafica.vue';
+import Simulador  from './js/Simulador.js';
 import './assets/css/app.css'; // Importa el archivo CSS
 export default {
   name: 'App',
@@ -37,16 +38,22 @@ export default {
 
   data() {
     return {
+      credito: '',
       datosSimulacion: {}
     };
   },
 
   methods: {
       setSimulacion (datos) {
-        console.log('Datos de simulación', datos);
-        this.datosSimulacion = datos;
+        this.credito = new Simulador(datos.monto, datos.periodo, datos.tasa, datos.plazo);
+        this.datosSimulacion = this.credito.simular();
+      },
+      setAbonos(datos){
+        console.log('Datos recibidos en App', datos);
+        this.credito.setAbonos(datos);
+        this.datosSimulacion = this.credito.simular();
       }
 
     }
 }
-</script>./components/Simulador_Calculos.vue
+</script>

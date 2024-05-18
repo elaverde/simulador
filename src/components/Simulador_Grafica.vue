@@ -28,7 +28,6 @@ export default {
   watch: {
     datos: {
       handler(newDatos) {
-        console.log('Datos actualizados', newDatos);
         // Actualizar items cuando cambian los datos
         this.actualizarItems(newDatos);
       },

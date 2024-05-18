@@ -37,29 +37,23 @@
   }
   </style>
   <script>
-  import Simulador  from '../js/Simulador.js';
+
 
   export default {
     data() {
       return {
         monto: 80000000,
         periodo: 'Anual',
-        tasa: 20,
+        tasa: 22.42,
         plazo: 54
       }
     },
     methods: {
+
       calcular() {
-        const resultado = new Simulador(this.monto, this.periodo, this.tasa, this.plazo);
-        let data = resultado.simular();
-        let credito={
-          monto: this.monto,
-          periodo: this.periodo,
-          tasa: this.tasa,
-          plazo: this.plazo,
-          simulacion: data
-        }
-        this.$emit('datos-simulacion', credito);
+
+        const data = {monto:this.monto, periodo: this.periodo, tasa: this.tasa, plazo:this.plazo};
+        this.$emit('datos-simulacion', data );
       }
     }
   }
