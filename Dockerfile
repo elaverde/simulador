@@ -13,6 +13,7 @@ RUN npm run build
 
 # Paso de depuración para listar los archivos
 RUN ls -la /app
+RUN ls -la /app/public
 
 ENV NODE_ENV production
 ENV PORT 80
