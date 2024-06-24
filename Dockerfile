@@ -11,9 +11,13 @@ COPY . .
 
 RUN npm run build
 
+# Paso de depuración para listar los archivos
+RUN ls -la /app
+
 ENV NODE_ENV production
 ENV PORT 80
 EXPOSE 80
+
 # Fase de ejecución
 FROM nginx:stable-alpine
 
