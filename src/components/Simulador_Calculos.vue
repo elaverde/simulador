@@ -31,7 +31,7 @@
    <tbody>
      <tr v-for="item in items" :key="item.periodo">
          <td>{{ item.periodo }}</td>
-         <td>{{ formatCurrency(item.cuota) }}</td>
+         <td>{{ formatCurrency(item.renta) }}</td>
          <td>{{ formatCurrency(item.principal) }}</td>
          <td>{{ formatCurrency(item.interes) }}</td>
          <td>
@@ -63,11 +63,12 @@
        credito: '',
        items: [
          {
+           principal:0,
            periodo: 0,
-           renta: 159,
-           interes: 100,
-           abono: 59,
-           saldo: 1000
+           renta: 0,
+           interes: 0,
+           abono: 0,
+           saldo: 0
          }
        ],
      }
