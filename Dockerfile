@@ -7,13 +7,12 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY dist /app
 
 RUN npm run build
 
 # Paso de depuración para listar los archivos
 RUN ls -la /app
-RUN ls -la /app/public
 
 ENV NODE_ENV production
 ENV PORT 80
@@ -23,4 +22,4 @@ EXPOSE 80
 FROM nginx:stable-alpine
 
 # Copiar solo los archivos de construcción desde la fase de construcción
-COPY --from=build /app/public /usr/share/nginx/html
+COPY --from=build /app /usr/share/nginx/html
