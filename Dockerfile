@@ -18,5 +18,5 @@ EXPOSE 80
 FROM nginx:stable-alpine
 
 # Copiar solo los archivos de construcción desde la fase de construcción
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 RUN /usr/share/nginx/html
