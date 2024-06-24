@@ -3,8 +3,6 @@
    <v-card-title>Calculos Préstamo</v-card-title>
 
    <v-card-text>
-
-
  <v-table theme="dark">
    <thead>
      <tr>
@@ -31,7 +29,7 @@
    <tbody>
      <tr v-for="item in items" :key="item.periodo">
          <td>{{ item.periodo }}</td>
-         <td>{{ formatCurrency(item.renta) }}</td>
+         <td>{{ formatCurrency(item.cuota) }}</td>
          <td>{{ formatCurrency(item.principal) }}</td>
          <td>{{ formatCurrency(item.interes) }}</td>
          <td>
