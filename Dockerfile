@@ -7,7 +7,7 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY dist /app
+COPY ./dist /app
 
 RUN npm run build
 
