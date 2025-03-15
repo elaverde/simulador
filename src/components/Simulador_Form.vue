@@ -79,7 +79,6 @@ export default {
         tasa: this.tasa,
         plazo: parseInt(this.plazo),
       };
-      console.log(data);
       this.$emit("datos-simulacion", data);
     },
   },

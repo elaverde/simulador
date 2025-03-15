@@ -24,10 +24,6 @@ class Simulador {
     }
   }
   getPagoMensual() {
-    console.log("Monto: ", this.monto);
-    console.log("Tasa: ", this.tasa.mensual);
-    console.log("Plazo: ", this.plazo);
-
     let tasa =
       (this.monto * this.tasa.mensual) /
       (1 - Math.pow(1 + this.tasa.mensual, -this.plazo));
@@ -46,11 +42,8 @@ class Simulador {
     let saldo = this.monto;
     let saldoAnterior = saldo;
     const cuota = this.getPagoMensual();
-    console.log("Cuota: ", cuota);
 
-    console.log("Plazo: ", this.plazo);
     for (let item = 0; item <= this.plazo; item++) {
-      console.log("Item: ", item);
       saldoAnterior = saldo;
       let interes = saldo * this.tasa.mensual;
       let abono = cuota - interes;
@@ -68,6 +61,21 @@ class Simulador {
       }
     }
   }
+  calcularInteresSinAbonos() {
+    const periodosPorAnio = this.periodo === "Anual" ? 1 : 12; // Períodos de capitalización por año
+    const plazoEnAnios = this.plazo / 12; // Convertir plazo de meses a años
+
+    // Fórmula de interés compuesto
+    const interes =
+      this.monto *
+      (Math.pow(
+        1 + this.tasa.anual / 100 / periodosPorAnio,
+        plazoEnAnios * periodosPorAnio
+      ) -
+        1);
+
+    return Math.floor(interes); // Redondear el interés
+  }
 
   getSumInteres() {
     // realizamos un for sumamos los interes de arrSimulacion
@@ -84,7 +92,6 @@ class Simulador {
   }
   setAbonos(abono) {
     this.abonos[abono.index] = abono.cantidad;
-    console.log(this.abonos);
   }
   simular() {
     // console.log(this.monto, this.periodo, this.tasa, this.plazo);
@@ -92,13 +99,16 @@ class Simulador {
     this.procesar();
     let credito = {
       monto: this.monto,
-      interesTotal: this.getSumInteres(),
+      interesTotal: Math.floor(this.getSumInteres()),
+      interesTotalSinAbonos: Math.floor(this.getValorFuturo() - this.monto),
       valorFuturo: this.getValorFuturo(),
       tasa: this.tasa,
       plazo: this.plazo,
       periodo: this.periodo,
       simulacion: this.arrSimulacion,
     };
+    console.log("🚀 ~ Simulador ~ simular ~ credito:", credito);
+
     return credito;
   }
 }
