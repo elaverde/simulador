@@ -1,9 +1,10 @@
 <template>
   <v-card>
-    <v-card-title v-if="items.length > 1">Calculos Préstamo</v-card-title>
+    <v-card-title v-if="items.length > 1">Cálculos Préstamo</v-card-title>
 
     <v-card-text>
-      <v-table v-if="items.length > 1" theme="dark">
+      <!-- Modo Tabla (Solo en pantallas grandes) -->
+      <v-table v-if="isMobile && items.length > 1" theme="dark">
         <thead>
           <tr>
             <th class="text-left">Período</th>
@@ -15,7 +16,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="items.length > 1" v-for="item in items" :key="item.periodo">
+          <tr v-for="item in items" :key="item.periodo">
             <td>{{ item.periodo }}</td>
             <td>{{ formatCurrency(item.cuota) }}</td>
             <td>{{ formatCurrency(item.principal) }}</td>
@@ -34,13 +35,38 @@
           </tr>
         </tbody>
       </v-table>
-      <span v-if="items.length > 1"
-        >Valor del crédito esperado:
-        {{ formatCurrency(credito.valorFuturo) }}</span
-      >
+
+      <!-- Modo Tarjetas (Solo en móviles) -->
+      <div v-else>
+        <v-card v-for="item in items" :key="item.periodo" class="mb-3" outlined>
+          <v-card-title>Período: {{ item.periodo }}</v-card-title>
+          <v-card-text>
+            <p><strong>Renta:</strong> {{ formatCurrency(item.cuota) }}</p>
+            <p>
+              <strong>Principal:</strong> {{ formatCurrency(item.principal) }}
+            </p>
+            <p><strong>Interés:</strong> {{ formatCurrency(item.interes) }}</p>
+            <p><strong>Saldo:</strong> {{ formatCurrency(item.saldo) }}</p>
+            <v-text-field
+              class="mt-2"
+              v-if="item.periodo != 0 && item != items[items.length - 1]"
+              @change="setAbonos(item.periodo, $event.target.value)"
+              v-model="item.abono"
+              label="Abono"
+              outlined
+            ></v-text-field>
+            <p v-else><strong>Abono a Capital:</strong> 0</p>
+          </v-card-text>
+        </v-card>
+      </div>
+
+      <span v-if="items.length > 1">
+        Valor del crédito esperado: {{ formatCurrency(credito.valorFuturo) }}
+      </span>
     </v-card-text>
   </v-card>
 </template>
+
 <script>
 export default {
   props: {
@@ -52,22 +78,18 @@ export default {
   data() {
     return {
       credito: "",
-      items: [
-        {
-          principal: 0,
-          periodo: 0,
-          renta: 0,
-          interes: 0,
-          abono: 0,
-          saldo: 0,
-        },
-      ],
+      items: [],
     };
+  },
+  computed: {
+    isMobile() {
+      console.log(window.innerWidth);
+      return window.innerWidth >= 600; // Si la pantalla es menor o igual a 768px, consideramos que es móvil
+    },
   },
   watch: {
     datos: {
       handler(newDatos) {
-        // Actualizar items cuando cambian los datos
         this.actualizarItems(newDatos);
       },
       deep: true,
@@ -79,15 +101,10 @@ export default {
       this.$emit("datos-simulacion", abono);
     },
     actualizarItems(datos) {
-      // Realizar cálculos y actualizar items
-      // Aquí puedes hacer los cálculos necesarios usando los datos recibidos y actualizar this.items
-      // Por ejemplo:
       this.items = datos.simulacion;
       this.credito = datos;
     },
     formatCurrency(value) {
-      // Formatear el número como moneda según tus necesidades
-      // Formatea el número con separadores de miles y dos decimales
       return (
         "$ " +
         parseFloat(value).toLocaleString("es-ES", {
@@ -99,3 +116,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+</style>
