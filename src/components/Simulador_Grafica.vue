@@ -20,7 +20,6 @@
         />
       </v-col>
     </v-row>
-
     <v-row> </v-row>
   </v-container>
 </template>
@@ -106,18 +105,35 @@ export default {
         return;
       }
       const labels = simulacion.map((item) => `Período ${item.periodo}`);
-      const saldos = simulacion.map((item) => item.saldo);
+      const interes = simulacion.slice(1).map((item) => item.interes);
+      const abonos = simulacion
+        .slice(1)
+        .map((item) => item.principal + parseInt(item.abono));
 
+      const saldo = simulacion.map((item) => {
+        return new Intl.NumberFormat("es-ES", {
+          style: "currency",
+          currency: "COP",
+        }).format(item.saldo);
+      });
       this.lineChartData = {
-        labels: labels,
+        labels: saldo,
         datasets: [
           {
-            label: "Saldo",
-            data: saldos,
+            label: "Interés",
+            data: interes,
             borderColor: "#00BFFF", // Color de la línea
             backgroundColor: "rgba(0, 191, 255, 0.2)", // Color de relleno
             fill: true, // Rellenar el área bajo la línea
-            tension: 0.4, // Suavizar la línea
+            tension: 0.8, // Suavizar la línea
+          },
+          {
+            label: "Abonos",
+            data: abonos,
+            borderColor: "#FFA500", // Color de la línea
+            backgroundColor: "rgba(255, 165, 0, 0.2)", // Color de relleno
+            fill: true, // Rellenar el área bajo la línea
+            tension: 0.8, // Suavizar la línea
           },
         ],
       };

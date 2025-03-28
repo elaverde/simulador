@@ -2,21 +2,23 @@
   <v-app>
     <v-main>
       <v-container fluid>
-        <v-row>
+        <v-row no-gutters>
           <!-- Formulario a la izquierda con algún padding -->
           <v-col class="formulario" cols="12" sm="5" md="4">
-            <div class="pa-4">
+            <div class="pa-sm-2">
               <Simulador_Form @datos-simulacion="setSimulacion" />
             </div>
           </v-col>
 
           <!-- Componente de cálculo a la derecha más ancho -->
           <v-col class="calculos" cols="12" sm="7" md="8">
-            <Simulador_Grafica :datos="datosSimulacion" />
-            <Simulador_Calculos
-              @datos-simulacion="setAbonos"
-              :datos="datosSimulacion"
-            />
+            <div class="pa-2">
+              <Simulador_Grafica :datos="datosSimulacion" />
+              <Simulador_Calculos
+                @datos-simulacion="setAbonos"
+                :datos="datosSimulacion"
+              />
+            </div>
           </v-col>
         </v-row>
       </v-container>

@@ -7,9 +7,8 @@
     class="mx-auto pb-6"
   ></v-img>
 
-  <v-card>
+  <v-card class="w-100 mx-0 px-0">
     <v-card-title>Detalles del Préstamo</v-card-title>
-
     <v-card-text>
       <v-row>
         <v-col cols="12">
@@ -20,8 +19,9 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12">
-          <v-row>
-            <v-col cols="7" class="mr-0 pr-0">
+          <v-row no-gutters>
+            <!-- Elimina los espacios entre columnas -->
+            <v-col cols="7" class="pr-1">
               <v-select
                 v-model="periodo"
                 class="input-without-border-radius"
@@ -30,7 +30,7 @@
                 outlined
               ></v-select>
             </v-col>
-            <v-col cols="5" class="ml-0 pl-0">
+            <v-col cols="5" class="pl-1">
               <v-text-field
                 v-model="tasa"
                 class="input-without-border-radius"
@@ -56,11 +56,13 @@
     </v-card-text>
   </v-card>
 </template>
+
 <style>
 .input-without-border-radius .v-input--outlined:not(.v-input--is-focused) {
-  border-radius: 0 !important; /* Anula el borde redondeado */
+  border-radius: 0 !important;
 }
 </style>
+
 <script>
 export default {
   data() {
