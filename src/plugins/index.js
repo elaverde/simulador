@@ -4,9 +4,9 @@
  * Automatically included in `./src/main.js`
  */
 
-// Plugins
+import './chartjs'
 import vuetify from './vuetify'
 
-export function registerPlugins (app) {
+export function registerPlugins(app) {
   app.use(vuetify)
 }

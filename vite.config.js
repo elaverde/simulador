@@ -21,5 +21,17 @@ export default defineConfig({
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   server: { port: 3000 },
-  build: { outDir: "dist", emptyOutDir: true },
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vuetify: ["vuetify"],
+          charts: ["chart.js", "vue-chartjs"],
+          pdf: ["jspdf", "jspdf-autotable"],
+        },
+      },
+    },
+  },
 });

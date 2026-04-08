@@ -1,7 +1,90 @@
+/* ── Base ─────────────────────────────────────────────────────────────────── */
 
-.formulario{
-    background-color: #171717;
+* {
+  box-sizing: border-box;
 }
-.calculos{
-    background-color: #212121;
+
+/* ── Columnas de layout ──────────────────────────────────────────────────── */
+
+.formulario {
+  background-color: #171717;
+}
+
+.calculos {
+  background-color: #212121;
+}
+
+/* ── Tabla con scroll horizontal ─────────────────────────────────────────── */
+
+.tabla-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 4px;
+}
+
+.tabla-scroll table {
+  min-width: 540px;
+}
+
+/* ── Tarjetas de resumen ──────────────────────────────────────────────────── */
+
+.resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 960px) {
+  .resumen-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.resumen-card {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 12px 14px;
+  border-left: 3px solid;
+}
+
+.resumen-card .rc-label {
+  font-size: 0.7rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.resumen-card .rc-value {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+@media (max-width: 599px) {
+  .resumen-card .rc-value {
+    font-size: 0.88rem;
+  }
+}
+
+/* ── Gráficas ─────────────────────────────────────────────────────────────── */
+
+.grafica-titulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* ── Form input touch targets en móvil ───────────────────────────────────── */
+
+@media (max-width: 599px) {
+  .v-field__input {
+    min-height: 48px !important;
+  }
 }

@@ -1,11 +1,9 @@
-import { th } from "vuetify/locale";
-
 class Simulador {
   arrSimulacion = [];
+
   constructor(monto, periodo, tasa, plazo) {
     this.monto = monto;
     this.periodo = periodo;
-    // creamos un array de abonos a capital con plazo
     this.abonos = new Array(plazo).fill(0);
     this.tasa = {
       mensual: tasa / 100,
@@ -16,19 +14,21 @@ class Simulador {
 
   getTasaInteres() {
     if (this.periodo === "Anual") {
-      let tasaMensual = Math.pow(1 + this.tasa.anual / 100, 1 / 12) - 1;
+      const tasaMensual = Math.pow(1 + this.tasa.anual / 100, 1 / 12) - 1;
       this.tasa = {
         mensual: tasaMensual,
         anual: this.tasa.anual,
       };
     }
   }
+
   getPagoMensual() {
-    let tasa =
+    return (
       (this.monto * this.tasa.mensual) /
-      (1 - Math.pow(1 + this.tasa.mensual, -this.plazo));
-    return tasa;
+      (1 - Math.pow(1 + this.tasa.mensual, -this.plazo))
+    );
   }
+
   procesar() {
     this.arrSimulacion = [];
     this.arrSimulacion.push({
@@ -39,65 +39,47 @@ class Simulador {
       interes: 0,
       saldo: this.monto,
     });
+
     let saldo = this.monto;
-    let saldoAnterior = saldo;
     const cuota = this.getPagoMensual();
 
-    for (let item = 0; item <= this.plazo; item++) {
-      saldoAnterior = saldo;
-      let interes = saldo * this.tasa.mensual;
-      let abono = cuota - interes;
-      saldo = saldo - (abono + Math.floor(this.abonos[item]));
+    // Fix: era `item <= this.plazo` (plazo+1 iteraciones); debe ser `item < this.plazo`
+    // Con `<=`, la última iteración accede a `this.abonos[plazo]` que es undefined → NaN
+    for (let item = 0; item < this.plazo; item++) {
+      const saldoAnterior = saldo;
+      const interes = saldo * this.tasa.mensual;
+      const principal = cuota - interes;
+      saldo = saldo - (principal + Math.floor(this.abonos[item]));
 
       if (interes > 0) {
         this.arrSimulacion.push({
           periodo: item + 1,
           saldo: saldo > 0 ? Math.floor(saldo) : 0,
           interes: Math.floor(interes),
-          principal: Math.floor(abono),
-          cuota: saldoAnterior < cuota ? saldoAnterior : Math.floor(cuota),
+          principal: Math.floor(principal),
+          cuota: saldoAnterior < cuota ? Math.floor(saldoAnterior) : Math.floor(cuota),
           abono: this.abonos[item],
         });
       }
     }
   }
-  calcularInteresSinAbonos() {
-    const periodosPorAnio = this.periodo === "Anual" ? 1 : 12; // Períodos de capitalización por año
-    const plazoEnAnios = this.plazo / 12; // Convertir plazo de meses a años
-
-    // Fórmula de interés compuesto
-    const interes =
-      this.monto *
-      (Math.pow(
-        1 + this.tasa.anual / 100 / periodosPorAnio,
-        plazoEnAnios * periodosPorAnio
-      ) -
-        1);
-
-    return Math.floor(interes); // Redondear el interés
-  }
 
   getSumInteres() {
-    // realizamos un for sumamos los interes de arrSimulacion
-    let sumInteres = 0;
-    for (let item of this.arrSimulacion) {
-      sumInteres += item.interes;
-    }
-    return sumInteres;
+    return this.arrSimulacion.reduce((sum, item) => sum + item.interes, 0);
   }
+
   getValorFuturo() {
-    let cuota = this.getPagoMensual();
-    let valorFuturo = cuota * this.plazo;
-    return valorFuturo;
+    return this.getPagoMensual() * this.plazo;
   }
+
   setAbonos(abono) {
     this.abonos[abono.index] = abono.cantidad;
   }
+
   simular() {
-    // console.log(this.monto, this.periodo, this.tasa, this.plazo);
     this.getTasaInteres();
     this.procesar();
-    let credito = {
+    return {
       monto: this.monto,
       interesTotal: Math.floor(this.getSumInteres()),
       interesTotalSinAbonos: Math.floor(this.getValorFuturo() - this.monto),
@@ -107,9 +89,6 @@ class Simulador {
       periodo: this.periodo,
       simulacion: this.arrSimulacion,
     };
-    console.log("🚀 ~ Simulador ~ simular ~ credito:", credito);
-
-    return credito;
   }
 }
 
