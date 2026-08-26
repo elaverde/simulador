@@ -1,12 +1,21 @@
 <template>
   <v-app>
     <v-app-bar color="surface" elevation="2" density="comfortable">
+      <template #prepend>
+        <v-avatar size="32" class="ml-2">
+          <v-img src="./assets/images/logo.svg" alt="Logo"></v-img>
+        </v-avatar>
+      </template>
       <v-app-bar-title>
-        <span class="text-primary font-weight-bold text-body-1 text-sm-h6">
+        <span class="text-high-emphasis font-weight-black text-body-1 text-sm-h6 marca-titulo">
           Simulador de Crédito
         </span>
       </v-app-bar-title>
       <template #append>
+        <Simulador_Prestamos
+          :datos-actuales="prestamoActual"
+          @abrir-prestamo="abrirPrestamo"
+        />
         <v-btn
           v-if="datosSimulacion.simulacion"
           color="primary"
@@ -28,17 +37,28 @@
         <v-row no-gutters class="main-row">
           <v-col class="formulario" cols="12" sm="5" md="4" lg="3">
             <div class="formulario-inner pa-3 pa-sm-4">
-              <Simulador_Form @datos-simulacion="setSimulacion" />
+              <Simulador_Form ref="form" @datos-simulacion="setSimulacion" />
             </div>
           </v-col>
 
           <v-col ref="calculosSection" class="calculos" cols="12" sm="7" md="8" lg="9">
             <div class="pa-3 pa-sm-4">
-              <Simulador_Grafica :datos="datosSimulacion" />
-              <Simulador_Calculos
-                :datos="datosSimulacion"
-                @datos-simulacion="setAbonos"
-              />
+              <template v-if="datosSimulacion.simulacion">
+                <Simulador_Grafica :datos="datosSimulacion" />
+                <Simulador_Calculos
+                  :datos="datosSimulacion"
+                  @datos-simulacion="setAbonos"
+                />
+              </template>
+
+              <div v-else class="estado-vacio">
+                <v-icon icon="mdi-calculator-variant-outline" size="64" color="primary" class="mb-4"></v-icon>
+                <div class="text-h6 font-weight-bold mb-2">Simula tu crédito</div>
+                <p class="text-body-2 text-medium-emphasis">
+                  Completa los datos del préstamo y presiona <strong>Calcular</strong>
+                  para ver la cuota mensual, los intereses y la tabla de amortización.
+                </p>
+              </div>
             </div>
           </v-col>
         </v-row>
@@ -53,6 +73,7 @@ import { generarPDF } from './js/generarPDF.js'
 import Simulador_Calculos from './components/Simulador_Calculos.vue'
 import Simulador_Form from './components/Simulador_Form.vue'
 import Simulador_Grafica from './components/Simulador_Grafica.vue'
+import Simulador_Prestamos from './components/Simulador_Prestamos.vue'
 import './assets/css/app.css'
 
 export default {
@@ -62,6 +83,7 @@ export default {
     Simulador_Calculos,
     Simulador_Form,
     Simulador_Grafica,
+    Simulador_Prestamos,
   },
 
   data() {
@@ -70,6 +92,19 @@ export default {
       datosSimulacion: {},
       generandoPDF: false,
     }
+  },
+
+  computed: {
+    prestamoActual() {
+      if (!this.credito) return null
+      return {
+        monto: this.credito.monto,
+        periodo: this.credito.periodo,
+        tasa: this.credito.tasa.anual,
+        plazo: this.credito.plazo,
+        abonos: this.credito.abonos,
+      }
+    },
   },
 
   methods: {
@@ -87,6 +122,13 @@ export default {
     setAbonos(datos) {
       this.credito.setAbonos(datos)
       this.datosSimulacion = this.credito.simular()
+    },
+    abrirPrestamo(prestamo) {
+      this.$refs.form.cargarDatos(prestamo)
+      if (this.credito && Array.isArray(prestamo.abonos)) {
+        this.credito.abonos = [...prestamo.abonos]
+        this.datosSimulacion = this.credito.simular()
+      }
     },
     async descargarPDF() {
       this.generandoPDF = true
@@ -123,5 +165,23 @@ export default {
 
 .formulario-inner {
   min-height: 100%;
+}
+
+.marca-titulo {
+  letter-spacing: -0.015em;
+}
+
+.estado-vacio {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.estado-vacio p {
+  max-width: 360px;
 }
 </style>

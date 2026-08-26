@@ -1,25 +1,20 @@
 <template>
   <div>
-    <v-img
-      src="../assets/images/logo.svg"
-      alt="Logo"
-      width="55%"
-      aspect-ratio="16/9"
-      class="mx-auto mb-4"
-    ></v-img>
-
     <v-card variant="flat" color="transparent">
-      <v-card-title class="text-subtitle-1 font-weight-bold px-0 pb-2">
+      <v-card-title class="text-subtitle-1 font-weight-bold px-0 pb-1 d-flex align-center">
+        <v-icon icon="mdi-file-document-edit-outline" size="20" color="primary" class="mr-2"></v-icon>
         Detalles del Préstamo
       </v-card-title>
+      <p class="text-caption text-medium-emphasis px-0 mb-4">
+        Ingresa las condiciones del crédito para proyectar tu plan de pagos.
+      </p>
 
       <v-card-text class="px-0">
         <v-text-field
-          v-model="monto"
+          v-model="montoFormateado"
           label="Monto del Préstamo"
-          type="number"
-          min="0"
-          step="1000000"
+          inputmode="numeric"
+          prefix="$"
           prepend-inner-icon="mdi-cash"
           density="comfortable"
           variant="outlined"
@@ -63,6 +58,8 @@
           density="comfortable"
           variant="outlined"
           hide-details="auto"
+          :hint="plazoAnios"
+          persistent-hint
           class="mb-4"
         ></v-text-field>
 
@@ -95,6 +92,26 @@ export default {
     }
   },
 
+  computed: {
+    montoFormateado: {
+      get() {
+        return this.monto || this.monto === 0
+          ? Number(this.monto).toLocaleString('es-ES')
+          : ''
+      },
+      set(value) {
+        const digitos = String(value).replace(/\D/g, '')
+        this.monto = digitos ? parseInt(digitos, 10) : ''
+      },
+    },
+    plazoAnios() {
+      const meses = parseInt(this.plazo)
+      if (!meses) return ''
+      const anios = (meses / 12).toFixed(1)
+      return `≈ ${anios} años`
+    },
+  },
+
   methods: {
     calcular() {
       this.$emit('datos-simulacion', {
@@ -103,6 +120,13 @@ export default {
         tasa: parseFloat(this.tasa),
         plazo: parseInt(this.plazo),
       })
+    },
+    cargarDatos(datos) {
+      this.monto = datos.monto
+      this.periodo = datos.periodo
+      this.tasa = datos.tasa
+      this.plazo = datos.plazo
+      this.calcular()
     },
   },
 }

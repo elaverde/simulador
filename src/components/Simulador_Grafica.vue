@@ -2,22 +2,26 @@
   <v-container class="px-0 pb-4" v-if="tienedatos">
     <v-row>
       <v-col cols="12" sm="6">
-        <div class="grafica-titulo">Evolución Interés / Abonos</div>
-        <div class="grafica-wrap">
-          <Line
-            id="saldo-chart"
-            :options="lineChartOptions"
-            :data="lineChartData"
-          />
-        </div>
+        <v-card variant="flat" border class="pa-3 grafica-card">
+          <div class="grafica-titulo">Evolución Interés / Abonos</div>
+          <div class="grafica-wrap">
+            <Line
+              id="saldo-chart"
+              :options="lineChartOptions"
+              :data="lineChartData"
+            />
+          </div>
+        </v-card>
       </v-col>
       <v-col cols="12" sm="6">
-        <div class="grafica-titulo">Composición de la Deuda</div>
-        <Bar
-          id="bar-chart"
-          :options="barChartOptions"
-          :data="barChartData"
-        />
+        <v-card variant="flat" border class="pa-3 grafica-card">
+          <div class="grafica-titulo">Composición de la Deuda</div>
+          <Bar
+            id="bar-chart"
+            :options="barChartOptions"
+            :data="barChartData"
+          />
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -46,7 +50,8 @@ export default {
           {
             label: 'Composición de la deuda',
             data: [0, 0, 0],
-            backgroundColor: ['#00BFFF', '#FFA500', '#ef5350'],
+            backgroundColor: ['#3987e5', '#199e70', '#e66767'],
+            borderRadius: 4,
             fill: true,
             tension: 0.4,
           },
@@ -143,8 +148,9 @@ export default {
           {
             label: 'Interés',
             data: interes,
-            borderColor: '#00BFFF',
-            backgroundColor: 'rgba(0, 191, 255, 0.15)',
+            borderColor: '#3987e5',
+            backgroundColor: 'rgba(57, 135, 229, 0.15)',
+            borderWidth: 2,
             fill: true,
             tension: 0.6,
             pointRadius: 2,
@@ -152,8 +158,9 @@ export default {
           {
             label: 'Abono + Principal',
             data: abonos,
-            borderColor: '#FFA500',
-            backgroundColor: 'rgba(255, 165, 0, 0.15)',
+            borderColor: '#d95926',
+            backgroundColor: 'rgba(217, 89, 38, 0.15)',
+            borderWidth: 2,
             fill: true,
             tension: 0.6,
             pointRadius: 2,
@@ -166,6 +173,10 @@ export default {
 </script>
 
 <style scoped>
+.grafica-card {
+  height: 100%;
+}
+
 .grafica-wrap {
   position: relative;
 }
